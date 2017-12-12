@@ -1,0 +1,17 @@
+{
+	"description" : "Another Audio visualizer from Yours truly. The inspiration i got from this wallpaper: http://steamcommunity.com/sharedfiles/filedetails/?id=908836600.\nFor now it will be very close to that wallpaper but i will soon change it to be more unique.",
+	"file" : "index.html",
+	"general" : 
+	{
+		"properties" : 
+		{
+		},
+		"supportsaudioprocessing" : true
+	},
+	"monetization" : false,
+	"preview" : "preview.jpg",
+	"tags" : [ "Abstract" ],
+	"title" : "WallPear.Stellar",
+	"type" : "web",
+	"visibility" : "public"
+}
