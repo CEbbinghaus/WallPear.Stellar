@@ -1,17 +1,108 @@
 {
+	"contentrating" : "Everyone",
 	"description" : "Another Audio visualizer from Yours truly. The inspiration i got from this wallpaper: http://steamcommunity.com/sharedfiles/filedetails/?id=908836600.\nFor now it will be very close to that wallpaper but i will soon change it to be more unique.",
 	"file" : "index.html",
 	"general" : 
 	{
 		"properties" : 
 		{
+			"bcol" : 
+			{
+				"order" : 1,
+				"text" : "Backround Color",
+				"type" : "color",
+				"value" : "#08303e"
+			},
+			"c" : 
+			{
+				"order" : 0,
+				"text" : "Custom Colors",
+				"type" : "bool",
+				"value" : true
+			},
+			"draw" : 
+			{
+				"options" : 
+				[
+					{
+						"label" : "Both",
+						"value" : 0
+					},
+					{
+						"label" : "Lines",
+						"value" : 1
+					},
+					{
+						"label" : "Dots",
+						"value" : 2
+					}
+				],
+				"order" : 3,
+				"text" : "Draw",
+				"type" : "combo",
+				"value" : 0
+			},
+			"pcol" : 
+			{
+				"order" : 2,
+				"text" : "Point Color",
+				"type" : "color",
+				"value" : "#FFFFFF"
+			},
+			"sens" : 
+			{
+				"max" : 10,
+				"min" : 0.5,
+				"order" : 3,
+				"text" : "Sensetivity",
+				"type" : "slider",
+				"value" : 1
+			},
+			"rad" : 
+			{
+				"max" : 100,
+				"min" : 1,
+				"order" : 4,
+				"text" : "Radius",
+				"type" : "slider",
+				"value" : 10
+			},
+			"dis" : 
+			{
+				"max" : 100,
+				"min" : 1,
+				"order" : 5,
+				"text" : "Max Line Distance",
+				"type" : "slider",
+				"value" : 30
+			},
+			"loc" : 
+			{
+				"max" : 63,
+				"min" : 0,
+				"order" : 6,
+				"text" : "Location of samples. (Left is Bass While Right is Treble)",
+				"type" : "slider",
+				"value" : 3
+			},
+			"siz" : 
+			{
+				"max" : 5,
+				"min" : 0,
+				"order" : 7,
+				"text" : "Sample Size",
+				"type" : "slider",
+				"value" : 3
+			}
+
 		},
 		"supportsaudioprocessing" : true
 	},
 	"monetization" : false,
-	"preview" : "preview.jpg",
+	"preview" : "preview.gif",
 	"tags" : [ "Abstract" ],
 	"title" : "WallPear.Stellar",
 	"type" : "web",
-	"visibility" : "public"
+	"visibility" : "public",
+	"workshopid" : 1258440560
 }
