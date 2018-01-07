@@ -21,16 +21,68 @@ const c = d("c");
 const ctx = c.getContext("2d");
 var points = [];
 var rad = 10;
+var fade = false;
 var dis = 300;
 var A = toRadian(Math.random() * 360);
 var lastTime = 0;
 var DeltaTime = 0;
+var rainbow = false;
 var avg2;
 var D = 0;
 var loc = 3;
 var siz = 3;
 var sens = 1;
 var Color = [255, 255, 255]
+var rgb = {
+    r: 50,
+    g: 0,
+    b: 0,
+    a: 1,
+    s: 1,
+    c: "r",
+    toHex : function(){
+        return "#" + this.r.toString(16) + this.g.toString(16) + this.b.toString(16)
+    },
+    toArr: function(){
+        return [this.r, this.g, this.b];
+    },
+    Update : function(){
+        switch(this.c){
+            case"r":
+                this.r+=this.s;
+                this.b-=this.s;
+                if(this.r > 255){
+                    this.r = 255;
+                    this.c = "g";
+                }
+            break;
+            case"g":
+                this.g+=this.s;
+                this.r-=this.s;
+                if(this.g > 255){
+                    this.g = 255;
+                    this.c = "b";
+                }
+            break;
+            case"b":
+                this.b+=this.s;
+                this.g-=this.s;
+                if(this.b > 255){
+                    this.b = 255;
+                    this.c = "r";
+                }
+            break;
+        }
+        if(this.r < 0)this.r = 0;
+        if(this.g < 0)this.g = 0;
+        if(this.b < 0)this.b = 0;
+    }
+}
+
+function lowest(k, l){
+    if(k < l)return l;
+    else return k;
+}
 
 window.wallpaperPropertyListener = {
     applyUserProperties: function(properties) {
@@ -40,6 +92,7 @@ window.wallpaperPropertyListener = {
         }
         if(properties.pcol){
             Color = properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)});
+            console.log(Color);
         }
         if(properties.draw){
             D = properties.draw.value;
@@ -59,6 +112,15 @@ window.wallpaperPropertyListener = {
         if(properties.siz){
             siz = properties.siz.value;
         }
+        if(properties.rain){
+            rainbow = properties.rain.value;
+        }
+        if(properties.spd){
+            rgb.s = properties.spd.value;
+        }
+        if(properties.fade){
+            fade = properties.fade.value;
+        }
     }
 }
 
@@ -73,7 +135,7 @@ function wallpaperAudioListener(audioArray) {
         totalAmount += e;
     });
     //if so then Exit the programm
-    if(totalAmount == audioArray.length || totalAmount <= 0.3){
+    if(totalAmount == audioArray.length){
         return;
     }
     totalAmount /= audioArray.length;
@@ -95,9 +157,14 @@ function wallpaperAudioListener(audioArray) {
     console.log(low, high, am)
 
     avg2 = Average.slice(low, high).reduce((a, b) => a + b, 0) / am * sens;
+    avg2 = lowest(avg2, 0.01)
 
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     //Update Each point to make it move
+    if(rainbow){
+        rgb.Update();
+        Color = rgb.toArr();
+    }
     points.forEach((p, i) => {
         let k = points[i];
         k.x += k.v.x * avg2 /*totalAmount*/ //(Average[i] / 2);

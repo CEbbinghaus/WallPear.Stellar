@@ -6,19 +6,25 @@
 	{
 		"properties" : 
 		{
+			"l" : 
+			{
+				"order" : 0,
+				"text" : "<h4>Stellar Audio Visualizer<br><small>This is a small Visualizer i made in a spare moment i had. if you want to see any features added then email: <a href=\"mailto:wallpear.cebbinghaus@gmail.com\">wallpear.cebbinghaus@gmail.com</a></small></h4>",
+				"type" : "text"
+			},
 			"bcol" : 
 			{
-				"order" : 1,
+				"order" : 0.01,
 				"text" : "Backround Color",
 				"type" : "color",
 				"value" : "#08303e"
 			},
-			"c" : 
+			"rain" : 
 			{
-				"order" : 0,
-				"text" : "Custom Colors",
+				"order" : 1,
+				"text" : "RGB (Can cause Problems with Bright backround colors)",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"draw" : 
 			{
@@ -42,8 +48,19 @@
 				"type" : "combo",
 				"value" : 0
 			},
+			"spd" : 
+			{
+				"condition" : "rain.value",
+				"max" : 20,
+				"min" : 1,
+				"order" : 1.1,
+				"text" : "RGB Speed",
+				"type" : "slider",
+				"value" : 1
+			},
 			"pcol" : 
 			{
+				"condition" : "!rain.value",
 				"order" : 2,
 				"text" : "Point Color",
 				"type" : "color",
@@ -93,7 +110,14 @@
 				"text" : "Sample Size",
 				"type" : "slider",
 				"value" : 3
-			}
+			},
+			"fade" : 
+			{
+				"order" : 8,
+				"text" : "Fade",
+				"type" : "bool",
+				"value" : false
+			},
 
 		},
 		"supportsaudioprocessing" : true
