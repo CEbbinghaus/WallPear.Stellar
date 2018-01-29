@@ -1,6 +1,10 @@
 //Initializing
 window.onload = function (){
-    window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+    if (window.wallpaperRegisterAudioListener) {
+        window.wallpaperRegisterAudioListener(wallpaperAudioListener);
+    } else {
+        window.setInterval(run, 1000 / 24);
+    }
     c.width = window.innerWidth;
     c.height = window.innerHeight;
     for(i = 0; i < 64; i++){
@@ -32,50 +36,20 @@ var D = 0;
 var loc = 3;
 var siz = 3;
 var sens = 1;
-var Color = [255, 255, 255]
+var UColor = 'hsl(0, 100, 50)';
+var Color = 'hsl(0, 100, 50)';
 var rgb = {
-    r: 50,
-    g: 0,
-    b: 0,
     a: 1,
     s: 1,
-    c: "r",
+    c: 0,
     toHex : function(){
         return "#" + this.r.toString(16) + this.g.toString(16) + this.b.toString(16)
     },
-    toArr: function(){
-        return [this.r, this.g, this.b];
+    toHSL: function(){
+        return `hsl(${this.c}, 100, 50)`;
     },
     Update : function(){
-        switch(this.c){
-            case"r":
-                this.r+=this.s;
-                this.b-=this.s;
-                if(this.r > 255){
-                    this.r = 255;
-                    this.c = "g";
-                }
-            break;
-            case"g":
-                this.g+=this.s;
-                this.r-=this.s;
-                if(this.g > 255){
-                    this.g = 255;
-                    this.c = "b";
-                }
-            break;
-            case"b":
-                this.b+=this.s;
-                this.g-=this.s;
-                if(this.b > 255){
-                    this.b = 255;
-                    this.c = "r";
-                }
-            break;
-        }
-        if(this.r < 0)this.r = 0;
-        if(this.g < 0)this.g = 0;
-        if(this.b < 0)this.b = 0;
+        this.c = (this.c + this.s) % 360;
     }
 }
 
@@ -91,8 +65,8 @@ window.wallpaperPropertyListener = {
             c.style.background='rgb('+background+')'
         }
         if(properties.pcol){
-            Color = properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)});
-            console.log(Color);
+            UColor = "rgb("+(properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)})).join(",") + ")"
+            console.log(UColor);
         }
         if(properties.draw){
             D = properties.draw.value;
@@ -160,11 +134,14 @@ function wallpaperAudioListener(audioArray) {
     avg2 = lowest(avg2, 0.01)
 
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
     //Update Each point to make it move
     if(rainbow){
         rgb.Update();
-        Color = rgb.toArr();
+        Color = rgb.toHSL();
     }
+    ctx.strokeStyle = rainbow ? Color : UColor;
+    ctx.fillStyle = rainbow ? Color : UColor;
     points.forEach((p, i) => {
         let k = points[i];
         k.x += k.v.x * avg2 /*totalAmount*/ //(Average[i] / 2);
@@ -174,22 +151,17 @@ function wallpaperAudioListener(audioArray) {
         if(k.y - rad <= 0){k.v.y = Math.abs(k.v.y);}
         if(k.y + rad >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
 
-        if(D == 0 || D == 2){
-            ctx.beginPath();
-            ctx.arc(p.x,p.y,rad * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
-            ctx.fill();
-        }
+
         if(D == 0 || D == 1){
             points.forEach(p1 => {
                 if(p.x.around(p1.x, dis) && p.x.around(p1.x, dis)){
-                    let d = Math.dist(p.x, p.y, p1.x, p1.y);
+                    let d = Math.hypot(p.x - p1.x, p.y - p1.y);
                     if(d < dis){
                         let a = 1 - d / dis
-                        ctx.strokeStyle = `rgba(${Color},${a})`;
-                        ctx.fillStyle = `rgb(${Color})`;
+                        ctx.globalAlpha = a;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p1.x, p1.y);
+                        ctx.lineTo(p1.x, p1.    y);
                         ctx.stroke();
                         ctx.globalAlpha = 1;
                     }
@@ -197,6 +169,15 @@ function wallpaperAudioListener(audioArray) {
             })
         }
     })
+    ctx.beginPath();
+    points.forEach((p, i) => {
+        if(D == 0 || D == 2){
+            ctx.moveTo(p.x + rad, p.y);
+            ctx.arc(p.x,p.y,rad * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
+        }
+    })
+    ctx.fill();
+
     let ct = Date.now();
     DeltaTime = ct - lastTime;
     lastTime = ct;
@@ -204,12 +185,6 @@ function wallpaperAudioListener(audioArray) {
 
 
 //Utility Functions
-Math.dist=function(x1,y1,x2,y2){ 
-    if(!x2) x2=0; 
-    if(!y2) y2=0;
-    return Math.sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)); 
-}
-
 function toRadian(n) {
     return n * 180 / Math.PI;
 }
@@ -230,4 +205,51 @@ Number.prototype.around = function(n, a){
     }else{
         return false;
     }
+}
+
+
+function run(){
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+    ctx.strokeStyle = rainbow ? Color : UColor;
+    ctx.fillStyle = rainbow ? Color : UColor;
+    points.forEach((p, i) => {
+        let k = points[i];
+        k.x += k.v.x * 0.6 /*totalAmount*/ //(Average[i] / 2);
+        k.y += k.v.y * 0.6 /*totalAmount*/ //(Average[i] / 2);
+        if(k.x - rad <= 0){k.v.x = Math.abs(k.v.x);}
+        if(k.x + rad >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
+        if(k.y - rad <= 0){k.v.y = Math.abs(k.v.y);}
+        if(k.y + rad >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
+
+
+        if(D == 0 || D == 1){
+            points.forEach(p1 => {
+                if(p.x.around(p1.x, dis) && p.x.around(p1.x, dis)){
+                    let d = Math.hypot(p.x - p1.x, p.y - p1.y);
+                    if(d < dis){
+                        let a = 1 - d / dis
+                        ctx.globalAlpha = a;
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p1.x, p1.    y);
+                        ctx.stroke();
+                        ctx.globalAlpha = 1;
+                    }
+                }
+            })
+        }
+    })
+    ctx.beginPath();
+    points.forEach((p, i) => {
+        if(D == 0 || D == 2){
+            ctx.moveTo(p.x + rad, p.y);
+            ctx.arc(p.x,p.y,rad * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
+        }
+    })
+    ctx.fill();
+
+    let ct = Date.now();
+    DeltaTime = ct - lastTime;
+    lastTime = ct;
 }
