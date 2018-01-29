@@ -86,7 +86,7 @@
 			},
 			"dis" : 
 			{
-				"max" : 100,
+				"max" : 50,
 				"min" : 1,
 				"order" : 5,
 				"text" : "Max Line Distance",

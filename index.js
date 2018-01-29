@@ -36,8 +36,8 @@ var D = 0;
 var loc = 3;
 var siz = 3;
 var sens = 1;
-var UColor = 'hsl(0, 100, 50)';
-var Color = 'hsl(0, 100, 50)';
+var UColor = 'rgb(255,255,255)';
+var Color = 'hsl(0, 100%, 60%)';
 var rgb = {
     a: 1,
     s: 1,
@@ -46,7 +46,7 @@ var rgb = {
         return "#" + this.r.toString(16) + this.g.toString(16) + this.b.toString(16)
     },
     toHSL: function(){
-        return `hsl(${this.c}, 100, 50)`;
+        return `hsl(${this.c}, 100%, 60%)`;
     },
     Update : function(){
         this.c = (this.c + this.s) % 360;
@@ -128,7 +128,6 @@ function wallpaperAudioListener(audioArray) {
     if(high > Average.length - 1)high = Average.length - 1;
     let am = high - low;
     if(am == 0)am = 1;
-    console.log(low, high, am)
 
     avg2 = Average.slice(low, high).reduce((a, b) => a + b, 0) / am * sens;
     avg2 = lowest(avg2, 0.01)
@@ -142,6 +141,7 @@ function wallpaperAudioListener(audioArray) {
     }
     ctx.strokeStyle = rainbow ? Color : UColor;
     ctx.fillStyle = rainbow ? Color : UColor;
+    console.log("Current Color = ",ctx.fillStyle || ctx.strokeStyle)
     points.forEach((p, i) => {
         let k = points[i];
         k.x += k.v.x * avg2 /*totalAmount*/ //(Average[i] / 2);
@@ -243,7 +243,7 @@ function run(){
     ctx.beginPath();
     points.forEach((p, i) => {
         if(D == 0 || D == 2){
-            ctx.moveTo(p.x + rad, p.y);
+            ctx.moveTo(p.x, p.y);
             ctx.arc(p.x,p.y,rad * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
         }
     })
