@@ -21,24 +21,24 @@ window.onload = function (){
 }
 
 //Declaring Variables
+let s = new Map()
 const c = d("c");
 const ctx = c.getContext("2d");
 var points = [];
-var rad = 10;
-var fade = false;
-var dis = 300;
-var A = toRadian(Math.random() * 360);
-var lastTime = 0;
-var DeltaTime = 0;
-var rainbow = false;
-var avg2;
-var D = 0;
-var loc = 3;
-var siz = 3;
-var sens = 1;
-var UColor = 'rgb(255,255,255)';
-var Color = 'hsl(0, 100%, 60%)';
-var rgb = {
+s.set('rad', 10)
+s.set('dis', 300)
+let lastTime = 0;
+let DeltaTime = 0;
+s.set('rainbow', false)
+let avg2;
+s.set('draw', 0)
+s.set('sens', 1)
+s.set('width', 1)
+s.set('loc', 3)
+s.set('siz', 3)
+s.set('UColor', 'rgb(255,255,255)')
+s.set('Color', 'hsl(0, 100%, 60%)')
+let rgb = {
     a: 1,
     s: 1,
     c: 0,
@@ -53,49 +53,26 @@ var rgb = {
     }
 }
 
-function lowest(k, l){
-    if(k < l)return l;
-    else return k;
-}
 
 window.wallpaperPropertyListener = {
-    applyUserProperties: function(properties) {
-        if(properties.bcol){
-            var background=properties.bcol.value.split(' ').map(function(c){return Math.ceil(c*255)});
-            c.style.background='rgb('+background+')'
-        }
-        if(properties.pcol){
-            UColor = "rgb("+(properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)})).join(",") + ")"
-            console.log(UColor);
-        }
-        if(properties.draw){
-            D = properties.draw.value;
-        }
-        if(properties.rad){
-            rad = properties.rad.value;
-        }
-        if(properties.dis){
-            dis = properties.dis.value * 10;
-        }
-        if(properties.sens){
-            sens = properties.sens.value;
-        }
-        if(properties.loc){
-            loc = properties.loc.value;
-        }
-        if(properties.siz){
-            siz = properties.siz.value;
-        }
-        if(properties.rain){
-            rainbow = properties.rain.value;
-        }
-        if(properties.spd){
-            rgb.s = properties.spd.value;
-        }
-        if(properties.fade){
-            fade = properties.fade.value;
-        }
-    }
+  applyUserProperties: function(properties) {
+		if(properties.bcol){
+			let background=properties.bcol.value.split(' ').map(function(c){return Math.ceil(c*255)});
+			c.style.background='rgb('+background+')'
+		}else if(properties.spd){
+			rgb.s = properties.spd.value;
+		}
+		console.log(properties);
+		s.forEach((n, p) => {
+				if(properties[p]){
+					if(p == 'pcol'){
+						s.set('UColor', "rgb("+(properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)})).join(",") + ")");
+					}else{
+						s.set(p, properties[p].value)
+					}
+			}
+  	})
+	}
 }
 
 //Update
@@ -122,42 +99,43 @@ function wallpaperAudioListener(audioArray) {
         Average[i] = Math.max(Right[i], Left[i])
     }
 
-    let low = loc - siz;
-    let high = loc + siz;
+    let low = s.get('draw') - s.get('siz');
+    let high = s.get('draw') + s.get('siz');
     if(low < 0)low = 0;
     if(high > Average.length - 1)high = Average.length - 1;
     let am = high - low;
     if(am == 0)am = 1;
 
-    avg2 = Average.slice(low, high).reduce((a, b) => a + b, 0) / am * sens;
-    avg2 = lowest(avg2, 0.01)
+    avg2 = Average.slice(low, high).reduce((a, b) => a + b, 0) / am * s.get('sens');
+    avg2 = Math.min(avg2, 0.01)
 
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
     //Update Each point to make it move
-    if(rainbow){
+    if(s.get('rainbow')){
         rgb.Update();
-        Color = rgb.toHSL();
+        s.set('Color', rgb.toHSL())
     }
-    ctx.strokeStyle = rainbow ? Color : UColor;
-    ctx.fillStyle = rainbow ? Color : UColor;
-    console.log("Current Color = ",ctx.fillStyle || ctx.strokeStyle)
+    ctx.strokeStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
+    ctx.fillStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
+    ctx.lineWidth = s.get('width');
     points.forEach((p, i) => {
         let k = points[i];
         k.x += k.v.x * avg2 /*totalAmount*/ //(Average[i] / 2);
         k.y += k.v.y * avg2 /*totalAmount*/ //(Average[i] / 2);
-        if(k.x - rad <= 0){k.v.x = Math.abs(k.v.x);}
-        if(k.x + rad >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
-        if(k.y - rad <= 0){k.v.y = Math.abs(k.v.y);}
-        if(k.y + rad >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
+        if(k.x - s.get('rad') <= 0){k.v.x = Math.abs(k.v.x);}
+        if(k.x + s.get('rad') >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
+        if(k.y - s.get('rad') <= 0){k.v.y = Math.abs(k.v.y);}
+        if(k.y + s.get('rad') >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
 
 
-        if(D == 0 || D == 1){
+        if(s.get('draw') == 0 || s.get('draw') == 1){
             points.forEach(p1 => {
-                if(p.x.around(p1.x, dis) && p.x.around(p1.x, dis)){
+                if(p.x.around(p1.x, s.get('dis')) && p.x.around(p1.x, s.get('dis'))){
                     let d = Math.hypot(p.x - p1.x, p.y - p1.y);
-                    if(d < dis){
-                        let a = 1 - d / dis
+                    if(d < s.get('dis')){
+                        let a = 1 - d / s.get('dis')
+												console.log(s.get('dis'));
                         ctx.globalAlpha = a;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
@@ -171,9 +149,9 @@ function wallpaperAudioListener(audioArray) {
     })
     ctx.beginPath();
     points.forEach((p, i) => {
-        if(D == 0 || D == 2){
-            ctx.moveTo(p.x + rad, p.y);
-            ctx.arc(p.x,p.y,rad * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
+        if(s.get('draw') == 0 || s.get('draw') == 2){
+            ctx.moveTo(p.x + s.get('rad'), p.y);
+            ctx.arc(p.x,p.y,s.get('rad') * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
         }
     })
     ctx.fill();
@@ -211,24 +189,24 @@ Number.prototype.around = function(n, a){
 function run(){
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-    ctx.strokeStyle = rainbow ? Color : UColor;
-    ctx.fillStyle = rainbow ? Color : UColor;
+    ctx.strokeStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
+    ctx.fillStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
     points.forEach((p, i) => {
         let k = points[i];
         k.x += k.v.x * 0.6 /*totalAmount*/ //(Average[i] / 2);
         k.y += k.v.y * 0.6 /*totalAmount*/ //(Average[i] / 2);
-        if(k.x - rad <= 0){k.v.x = Math.abs(k.v.x);}
-        if(k.x + rad >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
-        if(k.y - rad <= 0){k.v.y = Math.abs(k.v.y);}
-        if(k.y + rad >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
+        if(k.x - s.get('rad') <= 0){k.v.x = Math.abs(k.v.x);}
+        if(k.x + s.get('rad') >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
+        if(k.y - s.get('rad') <= 0){k.v.y = Math.abs(k.v.y);}
+        if(k.y + s.get('rad') >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
 
 
-        if(D == 0 || D == 1){
+        if(s.get('draw') == 0 || s.get('draw') == 1){
             points.forEach(p1 => {
-                if(p.x.around(p1.x, dis) && p.x.around(p1.x, dis)){
+                if(p.x.around(p1.x, s.get('dis')) && p.x.around(p1.x, s.get('dis'))){
                     let d = Math.hypot(p.x - p1.x, p.y - p1.y);
-                    if(d < dis){
-                        let a = 1 - d / dis
+                    if(d < s.get('dis')){
+                        let a = 1 - d / s.get('dis')
                         ctx.globalAlpha = a;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
@@ -242,9 +220,9 @@ function run(){
     })
     ctx.beginPath();
     points.forEach((p, i) => {
-        if(D == 0 || D == 2){
+        if(s.get('draw') == 0 || s.get('draw') == 2){
             ctx.moveTo(p.x, p.y);
-            ctx.arc(p.x,p.y,rad * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
+            ctx.arc(p.x,p.y,s.get('rad') * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
         }
     })
     ctx.fill();
