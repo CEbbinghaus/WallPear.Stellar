@@ -5,8 +5,8 @@ window.onload = function (){
     } else {
         window.setInterval(run, 1000 / 24);
     }
-    c.width = window.innerWidth;
-    c.height = window.innerHeight;
+    c.width = innerWidth;
+    c.height = innerHeight;
     for(i = 0; i < 64; i++){
         points.push({
             x: Math.random() * window.innerWidth,
@@ -62,7 +62,6 @@ window.wallpaperPropertyListener = {
 		}else if(properties.spd){
 			rgb.s = properties.spd.value;
 		}
-		console.log(properties);
 		s.forEach((n, p) => {
 				if(properties[p]){
 					if(p == 'pcol'){
@@ -128,14 +127,13 @@ function wallpaperAudioListener(audioArray) {
         if(k.y - s.get('rad') <= 0){k.v.y = Math.abs(k.v.y);}
         if(k.y + s.get('rad') >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
 
-
         if(s.get('draw') == 0 || s.get('draw') == 1){
             points.forEach(p1 => {
-                if(p.x.around(p1.x, s.get('dis')) && p.x.around(p1.x, s.get('dis'))){
+                //if(p.x.around(p1.x, s.get('dis')) && p.x.around(p1.x, s.get('dis'))){
                     let d = Math.hypot(p.x - p1.x, p.y - p1.y);
+                    console.log(d, s.get('dis'))   
                     if(d < s.get('dis')){
                         let a = 1 - d / s.get('dis')
-												console.log(s.get('dis'));
                         ctx.globalAlpha = a;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
@@ -143,7 +141,7 @@ function wallpaperAudioListener(audioArray) {
                         ctx.stroke();
                         ctx.globalAlpha = 1;
                     }
-                }
+                //}
             })
         }
     })

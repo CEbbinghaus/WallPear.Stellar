@@ -91,6 +91,7 @@
 				"order" : 4,
 				"text" : "Max Line Distance",
 				"type" : "slider",
+				"editable" : true,
 				"value" : 30
 			},
 			"sens" :
