@@ -25,11 +25,12 @@ let s = new Map()
 const c = d("c");
 const ctx = c.getContext("2d");
 var points = [];
-s.set('rad', 10)
-s.set('dis', 300)
+s.set('rad', 3)
+s.set('dis', 10)
 let lastTime = 0;
 let DeltaTime = 0;
 s.set('rainbow', false)
+s.set('opa', true)
 let avg2;
 s.set('draw', 0)
 s.set('sens', 1)
@@ -105,11 +106,11 @@ function wallpaperAudioListener(audioArray) {
     let am = high - low;
     if(am == 0)am = 1;
 
+    console.log(Average.slice(low, high))
     avg2 = Average.slice(low, high).reduce((a, b) => a + b, 0) / am * s.get('sens');
-    avg2 = Math.min(avg2, 0.01)
-
+    avg2 = Math.max(avg2, 0.00001)
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
+    
     //Update Each point to make it move
     if(s.get('rainbow')){
         rgb.Update();
@@ -131,9 +132,9 @@ function wallpaperAudioListener(audioArray) {
             points.forEach(p1 => {
                 //if(p.x.around(p1.x, s.get('dis')) && p.x.around(p1.x, s.get('dis'))){
                     let d = Math.hypot(p.x - p1.x, p.y - p1.y);
-                    console.log(d, s.get('dis'))   
-                    if(d < s.get('dis')){
-                        let a = 1 - d / s.get('dis')
+                    //console.log(d, s.get('dis'))   
+                    if(d < (s.get('dis') / 100 * innerWidth)){
+                        let a = s.get("opa") ?  1 - d / (s.get('dis') / 100 * innerWidth) : 1;
                         ctx.globalAlpha = a;
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
