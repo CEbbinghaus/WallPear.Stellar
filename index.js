@@ -17,7 +17,8 @@ window.onload = function (){
             }
         })
     }
-    c.style.background = "#08303e"
+    c.style.background = "#08303e";
+    requestAnimationFrame(update)
 }
 
 //Declaring Variables
@@ -106,9 +107,39 @@ function wallpaperAudioListener(audioArray) {
     let am = high - low;
     if(am == 0)am = 1;
 
-    console.log(Average.slice(low, high))
     avg2 = Average.slice(low, high).reduce((a, b) => a + b, 0) / am * s.get('sens');
-    avg2 = Math.max(avg2, 0.00001)
+    avg2 = Math.max(avg2, 0.001)
+    let ct = Date.now();
+    DeltaTime = ct - lastTime;
+    lastTime = ct;
+}
+
+
+//Utility Functions
+function toRadian(n) {
+    return n * 180 / Math.PI;
+}
+
+function d(l){
+    return document.getElementById(l);
+}
+
+var clamp = function(k, mi, ma){
+    if(k < mi)return mi;
+    if(k > ma)return ma;
+    return k;
+}
+
+Number.prototype.around = function(n, a){
+    if(n < this + a && n > this - a){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+function update(t) {
+    avg2 = avg2 ? avg2 : 0.01; 
     ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
     
     //Update Each point to make it move
@@ -121,8 +152,8 @@ function wallpaperAudioListener(audioArray) {
     ctx.lineWidth = s.get('width');
     points.forEach((p, i) => {
         let k = points[i];
-        k.x += k.v.x * avg2 /*totalAmount*/ //(Average[i] / 2);
-        k.y += k.v.y * avg2 /*totalAmount*/ //(Average[i] / 2);
+        k.x += k.v.x * avg2
+        k.y += k.v.y * avg2
         if(k.x - s.get('rad') <= 0){k.v.x = Math.abs(k.v.x);}
         if(k.x + s.get('rad') >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
         if(k.y - s.get('rad') <= 0){k.v.y = Math.abs(k.v.y);}
@@ -154,79 +185,5 @@ function wallpaperAudioListener(audioArray) {
         }
     })
     ctx.fill();
-
-    let ct = Date.now();
-    DeltaTime = ct - lastTime;
-    lastTime = ct;
-}
-
-
-//Utility Functions
-function toRadian(n) {
-    return n * 180 / Math.PI;
-}
-
-function d(l){
-    return document.getElementById(l);
-}
-
-var clamp = function(k, mi, ma){
-    if(k < mi)return mi;
-    if(k > ma)return ma;
-    return k;
-}
-
-Number.prototype.around = function(n, a){
-    if(n < this + a && n > this - a){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-
-function run(){
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
-    ctx.strokeStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
-    ctx.fillStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
-    points.forEach((p, i) => {
-        let k = points[i];
-        k.x += k.v.x * 0.6 /*totalAmount*/ //(Average[i] / 2);
-        k.y += k.v.y * 0.6 /*totalAmount*/ //(Average[i] / 2);
-        if(k.x - s.get('rad') <= 0){k.v.x = Math.abs(k.v.x);}
-        if(k.x + s.get('rad') >= window.innerWidth){k.v.x = -Math.abs(k.v.x);}
-        if(k.y - s.get('rad') <= 0){k.v.y = Math.abs(k.v.y);}
-        if(k.y + s.get('rad') >= window.innerHeight){k.v.y = -Math.abs(k.v.y);}
-
-
-        if(s.get('draw') == 0 || s.get('draw') == 1){
-            points.forEach(p1 => {
-                if(p.x.around(p1.x, s.get('dis')) && p.x.around(p1.x, s.get('dis'))){
-                    let d = Math.hypot(p.x - p1.x, p.y - p1.y);
-                    if(d < s.get('dis')){
-                        let a = 1 - d / s.get('dis')
-                        ctx.globalAlpha = a;
-                        ctx.beginPath();
-                        ctx.moveTo(p.x, p.y);
-                        ctx.lineTo(p1.x, p1.    y);
-                        ctx.stroke();
-                        ctx.globalAlpha = 1;
-                    }
-                }
-            })
-        }
-    })
-    ctx.beginPath();
-    points.forEach((p, i) => {
-        if(s.get('draw') == 0 || s.get('draw') == 2){
-            ctx.moveTo(p.x, p.y);
-            ctx.arc(p.x,p.y,s.get('rad') * clamp(avg2, 0.6, 0.9),0,2*Math.PI);
-        }
-    })
-    ctx.fill();
-
-    let ct = Date.now();
-    DeltaTime = ct - lastTime;
-    lastTime = ct;
+    requestAnimationFrame(update)
 }
