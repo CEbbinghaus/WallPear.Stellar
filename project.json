@@ -48,6 +48,12 @@
 				"type" : "combo",
 				"value" : 0
 			},
+			"opa" : {
+				"text" : "Change Opacity with width",
+				"order" :3.5,
+				"value" : true,
+				"type" : "bool"
+			},
 			"spd" :
 			{
 				"condition" : "rain.value",
@@ -73,7 +79,7 @@
 				"order" : 3,
 				"text" : "Radius",
 				"type" : "slider",
-				"value" : 10
+				"value" : 4
 			},
 			"width" :
 			{
@@ -86,12 +92,13 @@
 			},
 			"dis" :
 			{
-				"max" : 50,
+				"max" : 100,
 				"min" : 1,
 				"order" : 4,
 				"text" : "Max Line Distance",
 				"type" : "slider",
-				"value" : 30
+				"editable" : true,
+				"value" : 10
 			},
 			"sens" :
 			{
