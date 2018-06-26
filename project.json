@@ -6,6 +6,14 @@
 	{
 		"properties" : 
 		{
+			"bcol" : 
+			{
+				"condition" : "bg.value == 0",
+				"order" : 0.01,
+				"text" : "Backround Color",
+				"type" : "color",
+				"value" : "#08303e"
+			},
 			"bg" : 
 			{
 				"options" : 
@@ -23,21 +31,6 @@
 				"text" : "Background",
 				"type" : "combo",
 				"value" : 0
-			},
-			"bcol" : 
-			{
-				"condition" : "bg.value == 0",
-				"order" : 0.01,
-				"text" : "Backround Color",
-				"type" : "color",
-				"value" : "#08303e"
-			},
-			"img" : 
-			{
-				"condition" : "bg.value == 1",
-				"order" : 0.02,
-				"text" : "Backround Image",
-				"type" : "file"
 			},
 			"dis" : 
 			{
@@ -70,6 +63,13 @@
 				"text" : "Draw",
 				"type" : "combo",
 				"value" : 0
+			},
+			"img" : 
+			{
+				"condition" : "bg.value == 1",
+				"order" : 0.02,
+				"text" : "Backround Image",
+				"type" : "file"
 			},
 			"l" : 
 			{
@@ -170,5 +170,5 @@
 	"title" : "WallPear.Stellar",
 	"type" : "web",
 	"visibility" : "public",
-	"workshopid" : 1258440560
+	"workshopid" : "1258440560"
 }
