@@ -2,8 +2,6 @@
 window.onload = function (){
     if (window.wallpaperRegisterAudioListener) {
         window.wallpaperRegisterAudioListener(wallpaperAudioListener);
-    } else {
-        window.setInterval(run, 1000 / 24);
     }
     c.width = innerWidth;
     c.height = innerHeight;
