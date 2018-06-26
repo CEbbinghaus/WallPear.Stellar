@@ -1,34 +1,50 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "Another Audio visualizer from Yours truly. The inspiration i got from this wallpaper: http://steamcommunity.com/sharedfiles/filedetails/?id=908836600.\nFor now it will be very close to that wallpaper but i will soon change it to be more unique.",
+	"description" : "Another Audio visualizer from Yours truly. The inspiration i got from this wallpaper: http://steamcommunity.com/sharedfiles/filedetails/?id=908836600.\n\nIf you have any questions email me at wallpear.cebbinghaus@gmail.com.\nenjoy",
 	"file" : "index.html",
-	"general" :
+	"general" : 
 	{
-		"properties" :
+		"properties" : 
 		{
-			"l" :
+			"bcol" : 
 			{
-				"order" : 0,
-				"text" : "<h4>Stellar Audio Visualizer<br><small>This is a small Visualizer i made in a spare moment i had. if you want to see any features added then <a href=\"mailto:wallpear.cebbinghaus@gmail.com\">email</a> me</small></h4>",
-				"type" : "text"
-			},
-			"bcol" :
-			{
+				"condition" : "bg.value == 0",
 				"order" : 0.01,
 				"text" : "Backround Color",
 				"type" : "color",
 				"value" : "#08303e"
 			},
-			"rainbow" :
+			"bg" : 
 			{
-				"order" : 1,
-				"text" : "RGB (Can cause Problems with Bright backround colors)",
-				"type" : "bool",
-				"value" : false
+				"options" : 
+				[
+					{
+						"label" : "Color",
+						"value" : 0
+					},
+					{
+						"label" : "Image",
+						"value" : 1
+					}
+				],
+				"order" : 0.001,
+				"text" : "Background",
+				"type" : "combo",
+				"value" : 0
 			},
-			"draw" :
+			"dis" : 
 			{
-				"options" :
+				"editable" : true,
+				"max" : 100,
+				"min" : 1,
+				"order" : 4,
+				"text" : "Max Line Distance",
+				"type" : "slider",
+				"value" : 10
+			},
+			"draw" : 
+			{
+				"options" : 
 				[
 					{
 						"label" : "Both",
@@ -48,68 +64,20 @@
 				"type" : "combo",
 				"value" : 0
 			},
-			"opa" : {
-				"text" : "Change Opacity with width",
-				"order" :3.5,
-				"value" : true,
-				"type" : "bool"
-			},
-			"spd" :
+			"img" : 
 			{
-				"condition" : "rain.value",
-				"max" : 20,
-				"min" : 1,
-				"order" : 1.1,
-				"text" : "RGB Speed",
-				"type" : "slider",
-				"value" : 1
+				"condition" : "bg.value == 1",
+				"order" : 0.02,
+				"text" : "Backround Image",
+				"type" : "file"
 			},
-			"pcol" :
+			"l" : 
 			{
-				"condition" : "!rain.value",
-				"order" : 2,
-				"text" : "Point Color",
-				"type" : "color",
-				"value" : "#FFFFFF"
+				"order" : 0,
+				"text" : "<h4>Stellar Audio Visualizer<br><small>This is a small Visualizer i made in a spare moment i had. if you want to see any features added then <a href=\"mailto:wallpear.cebbinghaus@gmail.com\">email</a> me</small></h4>",
+				"type" : "text"
 			},
-			"rad" :
-			{
-				"max" : 100,
-				"min" : 1,
-				"order" : 3,
-				"text" : "Radius",
-				"type" : "slider",
-				"value" : 4
-			},
-			"width" :
-			{
-				"max" : 20,
-				"min" : 1,
-				"order" : 3,
-				"text" : "Line Width",
-				"type" : "slider",
-				"value" : 2
-			},
-			"dis" :
-			{
-				"max" : 100,
-				"min" : 1,
-				"order" : 4,
-				"text" : "Max Line Distance",
-				"type" : "slider",
-				"editable" : true,
-				"value" : 10
-			},
-			"sens" :
-			{
-				"max" : 10,
-				"min" : 0.5,
-				"order" : 5,
-				"text" : "Sensetivity",
-				"type" : "slider",
-				"value" : 1
-			},
-			"loc" :
+			"loc" : 
 			{
 				"max" : 63,
 				"min" : 0,
@@ -118,7 +86,54 @@
 				"type" : "slider",
 				"value" : 3
 			},
-			"siz" :
+			"opa" : 
+			{
+				"order" : 3.5,
+				"text" : "Change Opacity with width",
+				"type" : "bool",
+				"value" : true
+			},
+			"pcol" : 
+			{
+				"condition" : "!rainbow.value",
+				"order" : 2,
+				"text" : "Point Color",
+				"type" : "color",
+				"value" : "#FFFFFF"
+			},
+			"rad" : 
+			{
+				"max" : 100,
+				"min" : 1,
+				"order" : 3,
+				"text" : "Radius",
+				"type" : "slider",
+				"value" : 4
+			},
+			"rainbow" : 
+			{
+				"order" : 1,
+				"text" : "RGB (Can cause Problems with Bright backround colors)",
+				"type" : "bool",
+				"value" : false
+			},
+			"schemecolor" : 
+			{
+				"order" : 0,
+				"text" : "ui_browse_properties_scheme_color",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"sens" : 
+			{
+				"max" : 10,
+				"min" : 0.5,
+				"order" : 5,
+				"text" : "Sensetivity",
+				"type" : "slider",
+				"value" : 1
+			},
+			"siz" : 
 			{
 				"max" : 5,
 				"min" : 0,
@@ -126,8 +141,26 @@
 				"text" : "Sample Size",
 				"type" : "slider",
 				"value" : 3
+			},
+			"spd" : 
+			{
+				"condition" : "rain.value",
+				"max" : 20,
+				"min" : 1,
+				"order" : 1.1000000000000001,
+				"text" : "RGB Speed",
+				"type" : "slider",
+				"value" : 1
+			},
+			"width" : 
+			{
+				"max" : 20,
+				"min" : 1,
+				"order" : 3,
+				"text" : "Line Width",
+				"type" : "slider",
+				"value" : 2
 			}
-
 		},
 		"supportsaudioprocessing" : true
 	},
@@ -137,5 +170,5 @@
 	"title" : "WallPear.Stellar",
 	"type" : "web",
 	"visibility" : "public",
-	"workshopid" : 1258440560
+	"workshopid" : "1258440560"
 }
