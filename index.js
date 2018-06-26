@@ -25,6 +25,7 @@ const c = d("c");
 const ctx = c.getContext("2d");
 var points = [];
 s.set('rad', 3)
+s.set("bcol", "")
 s.set('dis', 10)
 let lastTime = 0;
 let DeltaTime = 0;
@@ -32,6 +33,7 @@ s.set('rainbow', false)
 s.set('opa', true)
 let avg2;
 s.set('draw', 0)
+s.set("img", "")
 s.set('sens', 1)
 s.set('width', 1)
 s.set('loc', 3)
@@ -56,19 +58,38 @@ let rgb = {
 
 window.wallpaperPropertyListener = {
   applyUserProperties: function(properties) {
-		if(properties.bcol){
-			let background=properties.bcol.value.split(' ').map(function(c){return Math.ceil(c*255)});
-			c.style.background='rgb('+background+')'
-		}else if(properties.spd){
+        if(properties.spd){
 			rgb.s = properties.spd.value;
-		}
+        }
+        if(properties.pcol){
+            s.set('UColor', "rgb("+(properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)})).join(",") + ")");
+        }
+        if(properties.bg){
+            if(properties.bg.value == 0){
+                c.style.background = s.get("bcol");
+            }else{
+                c.style.background = `url("${s.get("img")}")`
+                c.style.backgroundPosition = "center";
+                c.style.backgroundSize = "cover";
+            }
+        }
 		s.forEach((n, p) => {
-				if(properties[p]){
-					if(p == 'pcol'){
-						s.set('UColor', "rgb("+(properties.pcol.value.split(' ').map(function(c){return Math.ceil(c*255)})).join(",") + ")");
-					}else{
-						s.set(p, properties[p].value)
-					}
+            if(properties[p]){
+                switch(p){
+                    case "img":
+                        s.set("img", properties.img.value.replace(/%3A/g, ":").replace(/%20/g, " "))
+                        c.style.background = `url("${s.get("img")}")`
+                        c.style.backgroundPosition = "center";
+                        c.style.backgroundSize = "cover";
+                    break;
+                    case "bcol":
+                        let background=properties.bcol.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                        s.set("bcol", 'rgb('+background+')');
+                        c.style.background='rgb('+background+')'
+                    break;
+                    default:
+                        s.set(p, properties[p].value)
+                }
 			}
   	})
 	}
@@ -145,6 +166,7 @@ function update(t) {
         rgb.Update();
         s.set('Color', rgb.toHSL())
     }
+
     ctx.strokeStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
     ctx.fillStyle = s.get('rainbow') ? s.get('Color') : s.get('UColor');
     ctx.lineWidth = s.get('width');
@@ -184,4 +206,57 @@ function update(t) {
     })
     ctx.fill();
     requestAnimationFrame(update)
+}
+
+function hsl2rgb (h, s, l) {
+
+    var r, g, b, m, c, x
+
+    if (!isFinite(h)) h = 0
+    if (!isFinite(s)) s = 0
+    if (!isFinite(l)) l = 0
+
+    h /= 60
+    if (h < 0) h = 6 - (-h % 6)
+    h %= 6
+
+    s = Math.max(0, Math.min(1, s / 100))
+    l = Math.max(0, Math.min(1, l / 100))
+
+    c = (1 - Math.abs((2 * l) - 1)) * s
+    x = c * (1 - Math.abs((h % 2) - 1))
+
+    if (h < 1) {
+        r = c
+        g = x
+        b = 0
+    } else if (h < 2) {
+        r = x
+        g = c
+        b = 0
+    } else if (h < 3) {
+        r = 0
+        g = c
+        b = x
+    } else if (h < 4) {
+        r = 0
+        g = x
+        b = c
+    } else if (h < 5) {
+        r = x
+        g = 0
+        b = c
+    } else {
+        r = c
+        g = 0
+        b = x
+    }
+
+    m = l - c / 2
+    r = Math.round((r + m) * 255)
+    g = Math.round((g + m) * 255)
+    b = Math.round((b + m) * 255)
+
+    return { r: r, g: g, b: b }
+
 }
