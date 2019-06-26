@@ -19,6 +19,26 @@ window.onload = function (){
     requestAnimationFrame(update)
 }
 
+window.onresize = function(){
+    c.width = innerWidth;
+    c.height = innerHeight;
+}
+
+document.documentElement.onkeydown = (e) => e.key == 'f' ? openFullscreen() : null;
+
+function openFullscreen() {
+    elem = document.documentElement;
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { /* Firefox */
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE/Edge */
+      elem.msRequestFullscreen();
+    }
+  }
+
 //Declaring Variables
 let s = new Map()
 const c = d("c");
